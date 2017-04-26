@@ -1,15 +1,16 @@
-# LanguageServer
+# Sorcery
 
 **TODO: Add description**
+WIP Language server that implements the language server protocol (http://langserver.org/)
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `language_server` to your list of dependencies in `mix.exs`:
+by adding `sorcery` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:language_server, "~> 0.1.0"}]
+  [{:sorcery, "~> 0.1.0"}]
 end
 ```
 
