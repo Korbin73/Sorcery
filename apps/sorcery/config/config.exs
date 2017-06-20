@@ -22,8 +22,8 @@ use Mix.Config
 #
 
 config :logger,
-  handle_otp_reports: true,
-  handle_sasl_reports: true,
+  handle_otp_reports: false,
+  handle_sasl_reports: false,
   backends: [{ElixirLS.LanguageServer.LoggerBackend, :lsp_logger_backend}]
 
 # It is also possible to import configuration files, relative to this

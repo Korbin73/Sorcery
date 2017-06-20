@@ -17,8 +17,7 @@ defmodule ElixirLS.LanguageServer.Server do
   """
 
   use GenServer
-  alias ElixirLS.LanguageServer.{SourceFile, BuildError, Builder, Protocol, JsonRpc, 
-                                 Completion, Hover, Definition}
+  alias ElixirLS.LanguageServer.{Protocol, JsonRpc, Completion, Hover, Definition}
   require Logger
   use Protocol
 
@@ -71,24 +70,7 @@ defmodule ElixirLS.LanguageServer.Server do
     {:reply, :ok, send_responses(state)}
   end
 
-  def handle_call({:build_finished, build_errors}, _from, state) do
-    Logger.info("Build finished.")
-    state = update_build_errors(build_errors, state)
-    state = %{state | currently_compiling: nil, build_failures: 0}
-    state = 
-      if pending_changes?(state) do
-        queue_build(state)
-      else
-        state
-      end
-
-    {:reply, :ok, state}
-  end
-
-  def handle_call({:build_failed, error}, _from, state) do
-    Logger.info("Build failed.")
-    {:reply, :ok, build_failed(error, state)}
-  end
+ 
 
   def handle_call({:receive_packet, request(id, _, _) = packet}, _from, state) do 
     {request, state} = 
@@ -103,7 +85,7 @@ defmodule ElixirLS.LanguageServer.Server do
       end
 
     state = %{state | requests: state.requests ++ [request]}
-    Logger.info("State: #{IO.inspect(state)}")
+    #Logger.info("State: #{IO.inspect(state)}")
     {:reply, :ok, send_responses(state)}
   end
 
@@ -193,54 +175,17 @@ defmodule ElixirLS.LanguageServer.Server do
     state
   end
 
-  defp handle_notification(did_open(uri, _language_id, version, text), state) do
-    path = if is_binary(state.root_uri), do: Path.relative_to(uri, state.root_uri)
-    source_file = %SourceFile{text: text, path: path, version: version}
-    publish_file_diagnostics(uri, state.build_errors[uri], source_file)
-    state = put_in state.source_files[uri], source_file
-    track_change(uri, source_file, state)
-  end
-
-  defp handle_notification(did_close(uri), state) do
-    state = %{state | source_files: Map.delete(state.source_files, uri)}
-    track_change(uri, nil, state)
-  end
-
-  defp handle_notification(did_change(uri, version, content_changes), state) do
-    state = 
-      update_in state.source_files[uri], fn source_file ->
-        source_file = %{source_file | version: version}
-        SourceFile.apply_content_changes(source_file, content_changes)
-      end
-
-    track_change(uri, state.source_files[uri], state)
-  end
-
-  defp handle_notification(did_save(uri), state) do
-    track_change(uri, state.source_files[uri], state)
-  end
-
-  defp handle_notification(did_change_watched_files(_changes), state) do
-    force_build(state)
-  end
-
-  defp handle_notification(notification(_, _) = packet, state) do
-    Logger.warn("Received unmatched notification: #{inspect(packet)}")
-    state
+  defp handle_notification(did_open(_uri, _language_id, _version, _text), _state) do
+    Logger.info("Handle notification did open.")
+    # path = if is_binary(state.root_uri), do: Path.relative_to(uri, state.root_uri)
+    # source_file = %SourceFile{text: text, path: path, version: version}
+    # publish_file_diagnostics(uri, state.build_errors[uri], source_file)
+    # state = put_in state.source_files[uri], source_file
   end
 
   defp handle_request(initialize_req(_id, root_uri, client_capabilities), state) do
     Logger.info("Calling initial request.")
     state = %{state | root_uri: root_uri}
-    Mix.ProjectStack.clear_stack
-    state = 
-      case root_uri do
-        "file://" <> root_path ->
-          File.cd!(root_path)
-          force_build(state)
-        _ ->
-          state
-      end
 
     state = %{state | client_capabilities: client_capabilities, root_uri: root_uri}
 
@@ -284,10 +229,10 @@ defmodule ElixirLS.LanguageServer.Server do
     end, [:monitor])
   end
 
-  defp publish_file_diagnostics(uri, build_errors, source_file) do
-    diagnostics = for error <- build_errors || [], do: BuildError.to_diagnostic(error, source_file)
-    JsonRpc.notify("textDocument/publishDiagnostics", %{"uri" => uri, "diagnostics" => diagnostics})
-  end
+  # defp publish_file_diagnostics(uri, build_errors, source_file) do
+  #   diagnostics = for error <- build_errors || [], do: BuildError.to_diagnostic(error, source_file)
+  #   JsonRpc.notify("textDocument/publishDiagnostics", %{"uri" => uri, "diagnostics" => diagnostics})
+  # end
 
   defp send_responses(state) do
     case state.requests do
@@ -321,76 +266,7 @@ defmodule ElixirLS.LanguageServer.Server do
     end
   end
 
-  defp track_change(uri, source_file, state) do
-    state = put_in state.changed_sources[uri], source_file
-    queue_build(state)
-  end
-
-  defp force_build(state) do
-    state = %{state | force_rebuild?: true}
-    queue_build(state)
-  end
-
-  defp update_build_errors(build_errors, state) do
-    build_errors = Enum.group_by(build_errors, &(Path.join(state.root_uri, &1.file)))
-
-    all_uris = 
-      [Map.keys(state.build_errors), Map.keys(build_errors), Map.keys(state.source_files)]
-      |> List.flatten
-      |> Enum.uniq
-
-    for uri <- all_uris do
-      publish_file_diagnostics(uri, build_errors[uri], state.source_files[uri])
-    end
-
-    %{state | build_errors: build_errors}
-  end
-
-  defp build_failed(error, state) do
-    Logger.warn("Build failed: #{inspect(error)}")
-    cond do
-      pending_changes?(state) ->
-        # Retry with the new changes
-        all_sources = Map.merge(state.currently_compiling, state.changed_sources)
-        build_async(all_sources)
-        %{state | currently_compiling: all_sources, changed_sources: %{}, force_rebuild?: false}
-      state.build_failures >= 3 ->
-        if state.build_failures == 3 do
-          message = 
-            "Build failed after #{state.build_failures} tries. See error log for details."
-          JsonRpc.show_message(:error, message)
-        end
-
-        # Wait for additional file changes before retrying the build
-        %{state | changed_sources: state.currently_compiling, currently_compiling: nil, 
-                  build_failures: state.build_failures + 1}
-      true ->
-        build_async(state.currently_compiling)
-        %{state | build_failures: state.build_failures + 1, force_rebuild?: false}
-    end
-  end
-
-  defp pending_changes?(state) do
-    state.changed_sources != %{} or state.force_rebuild?
-  end
-        
-  defp queue_build(state) do
-    if state.currently_compiling == nil and match?("file://" <> _, state.root_uri) do
-      build_async(state.changed_sources)
-      %{state | currently_compiling: state.changed_sources, changed_sources: %{}, 
-                force_rebuild?: false}
-    else
-      state
-    end
-  end
-
-  defp build_async(source_files) do
-    parent = self()
-    Process.spawn(fn ->
-      case Builder.build(source_files) do
-        {:ok, build_errors} -> GenServer.call(parent, {:build_finished, build_errors})
-        {:error, error} -> GenServer.call(parent, {:build_failed, error})
-      end
-    end, [:link])
-  end
+  # defp pending_changes?(state) do
+  #   state.changed_sources != %{} or state.force_rebuild?
+  # end
 end

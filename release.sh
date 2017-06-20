@@ -16,5 +16,5 @@ rm -rf "$SCRIPTPATH"/release
 mkdir release
 cp bin/exscript* release/
 
-cd "$SCRIPTPATH"/apps/language_server
+cd "$SCRIPTPATH"/apps/sorcery
 mix escript.build
