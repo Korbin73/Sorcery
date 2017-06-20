@@ -44,11 +44,6 @@ defmodule ElixirLS.LanguageServer.Mixfile do
      embed_elixir: true, 
      path: "../../release/language_server",
      strip_beam: false, 
-     comment: escript_comment()]
-  end
-
-  defp escript_comment do
-    "Requires Elixir but does not embed it. Run via the included exscript.sh (Unix) or \
-     exscript.bat (Windows, TODO) scripts to set ERL_LIBS."
+    ]
   end
 end
