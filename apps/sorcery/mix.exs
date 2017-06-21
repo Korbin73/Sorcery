@@ -42,7 +42,7 @@ defmodule ElixirLS.LanguageServer.Mixfile do
   defp escript do
     [main_module: ElixirLS.LanguageServer.CLI, 
      embed_elixir: true, 
-     path: "../../release/language_server",
+     path: "../../release/sorcery",
      strip_beam: false, 
     ]
   end

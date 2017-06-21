@@ -42,37 +42,31 @@ defmodule ElixirLS.LanguageServer.Server do
 
   ## Client API
 
-  def start_link(name \\ nil) do
-    Logger.info("Link started.")
+  def start_link(name \\ nil) do    
     GenServer.start_link(__MODULE__, :ok, name: name)
   end
 
-  def receive_packet(server \\ __MODULE__, packet) do
+  def receive_packet(server \\ __MODULE__, packet) do    
     GenServer.call(server, {:receive_packet, packet})
   end
 
   ## Server Callbacks
 
-  def init(:ok) do
-    Logger.info("Initialized.")
+  def init(:ok) do    
     {:ok, %__MODULE__{}}
   end
 
-  def handle_call({:request_finished, id, {:error, type, msg}}, _from, state) do
-    Logger.info("Request finished")
+  def handle_call({:request_finished, id, {:error, type, msg}}, _from, state) do    
     state = update_request(state, id, &(%{&1 | status: :error, error_type: type, error_msg: msg}))
     {:reply, :ok, send_responses(state)}
   end
 
-  def handle_call({:request_finished, id, {:ok, result}}, _from, state) do
-    Logger.info("Request finished with result.")
+  def handle_call({:request_finished, id, {:ok, result}}, _from, state) do    
     state = update_request(state, id, &(%{&1 | status: :ok, result: result}))
     {:reply, :ok, send_responses(state)}
   end
 
- 
-
-  def handle_call({:receive_packet, request(id, _, _) = packet}, _from, state) do 
+  def handle_call({:receive_packet, request(id, _, _) = packet}, _from, state) do     
     {request, state} = 
       case handle_request(packet, state) do
         {:ok, result, state} ->
@@ -84,8 +78,7 @@ defmodule ElixirLS.LanguageServer.Server do
           {%Request{id: id, status: :async, pid: pid, ref: ref}, state}
       end
 
-    state = %{state | requests: state.requests ++ [request]}
-    #Logger.info("State: #{IO.inspect(state)}")
+    state = %{state | requests: state.requests ++ [request]}    
     {:reply, :ok, send_responses(state)}
   end
 
@@ -176,15 +169,10 @@ defmodule ElixirLS.LanguageServer.Server do
   end
 
   defp handle_notification(did_open(_uri, _language_id, _version, _text), _state) do
-    Logger.info("Handle notification did open.")
-    # path = if is_binary(state.root_uri), do: Path.relative_to(uri, state.root_uri)
-    # source_file = %SourceFile{text: text, path: path, version: version}
-    # publish_file_diagnostics(uri, state.build_errors[uri], source_file)
-    # state = put_in state.source_files[uri], source_file
+    Logger.info("Handle notification did open.")    
   end
 
-  defp handle_request(initialize_req(_id, root_uri, client_capabilities), state) do
-    Logger.info("Calling initial request.")
+  defp handle_request(initialize_req(_id, root_uri, client_capabilities), state) do    
     state = %{state | root_uri: root_uri}
 
     state = %{state | client_capabilities: client_capabilities, root_uri: root_uri}
@@ -227,12 +215,7 @@ defmodule ElixirLS.LanguageServer.Server do
       result = func.()
       GenServer.call(parent, {:request_finished, id, result})
     end, [:monitor])
-  end
-
-  # defp publish_file_diagnostics(uri, build_errors, source_file) do
-  #   diagnostics = for error <- build_errors || [], do: BuildError.to_diagnostic(error, source_file)
-  #   JsonRpc.notify("textDocument/publishDiagnostics", %{"uri" => uri, "diagnostics" => diagnostics})
-  # end
+  end  
 
   defp send_responses(state) do
     case state.requests do
@@ -264,9 +247,5 @@ defmodule ElixirLS.LanguageServer.Server do
     update_in state.requests, fn requests ->
       find_and_update(requests, &(&1.ref == ref), update_fn)
     end
-  end
-
-  # defp pending_changes?(state) do
-  #   state.changed_sources != %{} or state.force_rebuild?
-  # end
+  end  
 end

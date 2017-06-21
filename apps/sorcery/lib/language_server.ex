@@ -9,9 +9,9 @@ defmodule ElixirLS.LanguageServer do
   # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
+    Logger.info("Starting workers.")
     children = [
-      # Define workers and child supervisors to be supervised
-      
+      # Define workers and child supervisors to be supervised      
       worker(ElixirLS.LanguageServer.Server, [ElixirLS.LanguageServer.Server]),
       worker(ElixirLS.IOHandler, [ElixirLS.LanguageServer.Server, [name: ElixirLS.LanguageServer.IOHandler]]),
     ]
