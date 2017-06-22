@@ -66,7 +66,8 @@ defmodule ElixirLS.LanguageServer.Server do
     {:reply, :ok, send_responses(state)}
   end
 
-  def handle_call({:receive_packet, request(id, _, _) = packet}, _from, state) do     
+  def handle_call({:receive_packet, request(id, _, _) = packet}, _from, state) do 
+    Logger.info("Recieved handled.")    
     {request, state} = 
       case handle_request(packet, state) do
         {:ok, result, state} ->
@@ -139,6 +140,7 @@ defmodule ElixirLS.LanguageServer.Server do
   end
 
   defp handle_notification(notification("initialized"), state) do
+    Logger.info("Handle initialize with: #{inspect(state)}")
     state  # noop
   end
 
