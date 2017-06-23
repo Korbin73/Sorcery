@@ -18,7 +18,7 @@ defmodule ElixirLS.LanguageServer.JsonRpc do
     end
   end
 
-  defmacro request(id, method, params) do
+  defmacro request(id, method, params) do    
     quote do
       %{"id" => unquote(id), "method" => unquote(method), "params" => unquote(params), 
         "jsonrpc" => "2.0"}

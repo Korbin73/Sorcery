@@ -47,6 +47,7 @@ defmodule ElixirLS.LanguageServer.Server do
   end
 
   def receive_packet(server \\ __MODULE__, packet) do    
+    Logger.info("Packet: #{IO.inspect(packet)}")
     GenServer.call(server, {:receive_packet, packet})
   end
 
