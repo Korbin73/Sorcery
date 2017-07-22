@@ -47,7 +47,6 @@ defmodule ElixirLS.LanguageServer.Server do
   end
 
   def receive_packet(server \\ __MODULE__, packet) do    
-    Logger.info("Packet: #{IO.inspect(packet)}")
     GenServer.call(server, {:receive_packet, packet})
   end
 
@@ -68,7 +67,6 @@ defmodule ElixirLS.LanguageServer.Server do
   end
 
   def handle_call({:receive_packet, request(id, _, _) = packet}, _from, state) do 
-    Logger.info("Recieved handled.")    
     {request, state} = 
       case handle_request(packet, state) do
         {:ok, result, state} ->
@@ -141,7 +139,6 @@ defmodule ElixirLS.LanguageServer.Server do
   end
 
   defp handle_notification(notification("initialized"), state) do
-    Logger.info("Handle initialize with: #{inspect(state)}")
     state  # noop
   end
 
@@ -171,8 +168,7 @@ defmodule ElixirLS.LanguageServer.Server do
     state
   end
 
-  defp handle_notification(did_open(_uri, _language_id, _version, _text), _state) do
-    Logger.info("Handle notification did open.")    
+  defp handle_notification(did_open(_uri, _language_id, _version, _text), _state) do    
   end
 
   defp handle_request(initialize_req(_id, root_uri, client_capabilities), state) do    
