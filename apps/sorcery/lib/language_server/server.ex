@@ -1,29 +1,9 @@
 defmodule ElixirLS.LanguageServer.Server do
-  @moduledoc """
-  Language Server Protocol server
-
-  This server tracks open files, attempts to rebuild the project when a file changes, and handles
-  requests from the IDE (for things like autocompletion, hover, etc.)
-
-  Notifications from the IDE are handled synchronously, whereas requests can be handled sychronously
-  or asynchronously. 
-  
-  When possible, handling the request asynchronously has several advantages. The asynchronous 
-  request handling cannot modify the server state.  That way, if the process handling the request
-  crashes, we can report that error to the client and continue knowing that the state is 
-  uncorrupted. Also, asynchronous requests can be cancelled by the client if they're taking too long
-  or the user no longer cares about the result. Regardless of completion order, the protocol
-  specifies that requests must be replied to in the order they are received.
-  """
-
   use GenServer
   alias ElixirLS.LanguageServer.{Protocol, JsonRpc, Completion, Hover, Definition}
-  require Logger
   use Protocol
 
   defstruct [
-    build_errors: %{},
-    build_failures: 0,
     builder: nil,
     changed_sources: %{},
     client_capabilities: nil,
@@ -46,8 +26,10 @@ defmodule ElixirLS.LanguageServer.Server do
     GenServer.start_link(__MODULE__, :ok, name: name)
   end
 
-  def receive_packet(server \\ __MODULE__, packet) do    
+  def receive_packet(server \\ __MODULE__, packet) do
+    #JsonRpc.log_message(:info, "Incoming packet: #{Poison.encode!(packet)}")    
     GenServer.call(server, {:receive_packet, packet})
+    #GenServer.call(server, {:test_packet, packet})
   end
 
   ## Server Callbacks
@@ -77,7 +59,7 @@ defmodule ElixirLS.LanguageServer.Server do
           {pid, ref} = handle_request_async(id, fun)
           {%Request{id: id, status: :async, pid: pid, ref: ref}, state}
       end
-
+  
     state = %{state | requests: state.requests ++ [request]}    
     {:reply, :ok, send_responses(state)}
   end
@@ -219,8 +201,9 @@ defmodule ElixirLS.LanguageServer.Server do
   defp send_responses(state) do
     case state.requests do
       [%Request{id: id, status: :ok, result: result} | rest] ->
-        JsonRpc.respond(id, result)
-        send_responses(%{state | requests: rest})
+#       IO.inspect(result, [label: "State before sending",syntax_colors: [string: :blue, map: :red]])
+        JsonRpc.respond(id, result)  
+        send_responses(%{state | requests: rest}) 
       [%Request{id: id, status: :error, error_type: error_type, error_msg: error_msg} | rest] ->
         JsonRpc.respond_with_error(id, error_type, error_msg)
         send_responses(%{state | requests: rest})
@@ -231,7 +214,7 @@ defmodule ElixirLS.LanguageServer.Server do
 
   defp server_capabilities do
     %{"textDocumentSync" => 1,
-      "hoverProvider" => true,
+      "hoverProvider" => false,
       "completionProvider" => %{},
       "definitionProvider" => true}
   end

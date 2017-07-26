@@ -1,92 +1,88 @@
 defmodule Sorcery.Stubs do
-  import ElixirLS.LanguageServer.Server
-  
   def init_server do
-    %ElixirLS.LanguageServer.Server{
-      build_errors: %{}, 
-      build_failures: 0, 
-      builder: nil, 
-      changed_sources: %{}, 
-      client_capabilities: %{
-        "textDocument" => %{
-          "codeAction" => %{
-            "dynamicRegistration" => true
-          }, 
-          "codeLens" => %{
-            "dynamicRegistration" => true
-          }, 
-          "completion" => %{
-            "completionItem" => %{
-              "snippetSupport" => true
-            }, 
-            "dynamicRegistration" => true
-          }, 
-          "definition" => %{
-            "dynamicRegistration" => true
-          }, 
-          "documentHighlight" => %{
-            "dynamicRegistration" => true
-          }, 
-          "documentLink" => %{
-            "dynamicRegistration" => true
-          }, 
-          "documentSymbol" => %{
-            "dynamicRegistration" => true
-          }, 
-          "formatting" => %{
-            "dynamicRegistration" => true
-          }, 
-          "hover" => %{
-            "dynamicRegistration" => true
-          }, 
-          "onTypeFormatting" => %{
-            "dynamicRegistration" => true
-          }, 
-          "rangeFormatting" => %{
-            "dynamicRegistration" => true
-          }, 
-          "references" => %{
-            "dynamicRegistration" => true
-          }, 
-          "rename" => %{
-            "dynamicRegistration" => true
-          }, 
-          "signatureHelp" => %{
-            "dynamicRegistration" => true
-          }, 
-          "synchronization" => %{
-            "didSave" => true, 
-            "dynamicRegistration" => true, 
-            "willSave" => true, 
-            "willSaveWaitUntil" => true
-          }
-        }, 
-        "workspace" => %{
-          "applyEdit" => true, 
-          "didChangeConfiguration" => %{
-            "dynamicRegistration" => false
-          }, 
-          "didChangeWatchedFiles" => %{
-            "dynamicRegistration" => false
-          }, 
-          "executeCommand" => %{
-            "dynamicRegistration" => true
-          }, 
-          "symbol" => %{
-            "dynamicRegistration" => true
-          }, 
-          "workspaceEdit" => %{
-            "documentChanges" => true
+    %{
+      "params" => %{
+        "trace" => "verbose",
+        "rootUri" => "file:///Users/Lee1/Documents/garden_api",
+        "rootPath" => "/Users/Lee1/Documents/garden_api",
+        "processId" => 6369,
+        "capabilities" => %{
+          "workspace" => %{
+            "workspaceEdit" => %{
+              "documentChanges" => true
+            },
+            "symbol" => %{
+              "dynamicRegistration" => true
+            },
+            "executeCommand" => %{
+              "dynamicRegistration" => true
+            },
+            "didChangeWatchedFiles" => %{
+              "dynamicRegistration" => false
+            },
+            "didChangeConfiguration" => %{
+              "dynamicRegistration" => false
+            },
+            "applyEdit" => true
+          },
+          "textDocument" => %{
+            "synchronization" => %{
+              "willSaveWaitUntil" => true,
+              "willSave" => true,
+              "dynamicRegistration" => true,
+              "didSave" => true
+            },
+            "signatureHelp" => %{
+              "dynamicRegistration" => true
+            },
+            "rename" => %{
+              "dynamicRegistration" => true
+            },
+            "references" => %{
+              "dynamicRegistration" => true
+            },
+            "rangeFormatting" => %{
+              "dynamicRegistration" => true
+            },
+            "onTypeFormatting" => %{
+              "dynamicRegistration" => true
+            },
+            "hover" => %{
+              "dynamicRegistration" => true
+            },
+            "formatting" => %{
+              "dynamicRegistration" => true
+            },
+            "documentSymbol" => %{
+              "dynamicRegistration" => true
+            },
+            "documentLink" => %{
+              "dynamicRegistration" => true
+            },
+            "documentHighlight" => %{
+              "dynamicRegistration" => true
+            },
+            "definition" => %{
+              "dynamicRegistration" => true
+            },
+            "completion" => %{
+              "dynamicRegistration" => true,
+              "completionItem" => %{
+                "snippetSupport" => true
+              }
+            },
+            "codeLens" => %{
+              "dynamicRegistration" => true
+            },
+            "codeAction" => %{
+              "dynamicRegistration" => true
+            }
           }
         }
-      }, 
-      currently_compiling: nil, 
-      force_rebuild?: false, 
-      received_shutdown?: false, 
-      requests: [], 
-      root_uri: "file:///home/lee/Documents/projects/Elixirist/language_server/apps/sorcery", 
-      settings: nil, 
-      source_files: %{}
+      },
+      "method" => "initialize",
+      "jsonrpc" => "2.0",
+      "id" => 0
     }
   end
 end
