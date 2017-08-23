@@ -14,12 +14,14 @@ defmodule CommandTests do
     assert :ok == result
   end
 
-  def assert_result({:ok, cap}) do
+  @spec assert_capabilities({Atom.t, %{}}) :: boolean
+  def assert_capabilities({:ok, cap}) do
     %{ "result" => %{ "capabilities" => %{ "hoverProvider" => hover }}} = cap
     assert hover == false
   end
-  def assert_result({:error, _}), do: assert(false, "Didn't return capabilities")
+  def assert_capabilities({:error, _}), do: assert(false, "Didn't return capabilities")
 
+  @spec initial_response() :: String.t
   def initial_response() do
     make_call = fn -> 
       Server.handle_call({:receive_packet, Stubs.init_server()}, :ignored, %ElixirLS.LanguageServer.Server{})
@@ -32,7 +34,7 @@ defmodule CommandTests do
     opening_bracket = :binary.match(response,"{") |> elem(0) |> Kernel.-(2)
     String.slice(response, opening_bracket..String.length(response)) 
       |> Poison.decode()
-      |> assert_result()
+      |> assert_capabilities()
   end
 
   test "Should return a completion provider in capabilities" do

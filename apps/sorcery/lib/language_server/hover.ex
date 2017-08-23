@@ -9,7 +9,7 @@ defmodule ElixirLS.LanguageServer.Hover do
 
     line_text = Enum.at(String.split(text, "\n"), line)
     range = highlight_range(line_text, line, character, subject)
-
+    
     %{"contents" => contents(docs), "range" => range}
   end
 
