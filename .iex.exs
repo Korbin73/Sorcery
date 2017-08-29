@@ -6,8 +6,8 @@ end
 
 # IEx.configure colors: [enabled: true]
 # IEx.configure colors: [ eval_result: [ :cyan, :bright ] ]
-IO.puts IO.ANSI.red_background() <> IO.ANSI.white() <> " ❄❄❄ Elixir REPL ❄❄❄ " <> IO.ANSI.reset
-Application.put_env(:elixir, :ansi_enabled, true)
+# IO.puts IO.ANSI.red_background() <> IO.ANSI.white() <> " ❄❄❄ Elixir REPL ❄❄❄ " <> IO.ANSI.reset
+# Application.put_env(:elixir, :ansi_enabled, true)
 
 IEx.configure(
  colors: [
