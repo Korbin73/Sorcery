@@ -31,14 +31,14 @@ defmodule CommandTests do
   #   capture_io(make_call)
   # end
 
-  test "Should not return a hover provider in capabilities" do
+  # test "Should not return a hover provider in capabilities" do
     # response = initial_response()
     # opening_bracket = :binary.match(response,"{") |> elem(0) |> Kernel.-(2)
     # String.slice(response, opening_bracket..String.length(response)) 
     #   |> Poison.decode()
     #   |> assert_capabilities()
     
-  end
+  # end
 
   test "Call without gen server" do
     result = Server.handle_call({:receive_packet, Stubs.init_server()}, :ignored)
