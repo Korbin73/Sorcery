@@ -39,9 +39,25 @@ defmodule CommandTests do
     #   |> assert_capabilities()
     
   # end
+  import ElixirLS.LanguageServer.JsonRpc
+  def def_macro(request(id,_,_) = packet) do
+    IO.puts "request"
+  end
+
+  def def_macro(notification(_) = packet) do
+    IO.puts "notification"
+  end
+
+  def get_id(%{"id" => id}) do
+    IO.inspect id, label: "Parsed id"
+  end
+
+  test "check macro" do
+    def_macro(Stubs.init_server())
+  end
 
   test "Call without gen server" do
     result = Server.handle_call({:receive_packet, Stubs.init_server()}, :ignored)
-    IO.inspect(result, label: "Return from handle call")
+    # IO.inspect(result, label: "Return from handle call")
   end
 end

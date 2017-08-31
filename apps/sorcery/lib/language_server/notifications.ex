@@ -1,7 +1,7 @@
 defmodule ElixirLS.LanguageServer.Notifications do
   import ElixirLS.LanguageServer.JsonRpc
 
-  def handle_notification(pattern_here, state) do
+  def handle_notification(notification("$/setTraceNotification"), state) do
     # notification("$/setTraceNotification")
   end
 

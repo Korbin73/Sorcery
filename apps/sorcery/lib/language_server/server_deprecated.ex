@@ -32,11 +32,7 @@ defmodule ElixirLS.LanguageServer.Server.Deprecated do
     #GenServer.call(server, {:test_packet, packet})
   end
 
-  ## Server Callbacks
-
-  def init(:ok) do    
-    {:ok, %__MODULE__{}}
-  end
+  ## Server Callbacks  
 
   def handle_call({:request_finished, id, {:error, type, msg}}, _from, state) do    
     state = update_request(state, id, &(%{&1 | status: :error, error_type: type, error_msg: msg}))

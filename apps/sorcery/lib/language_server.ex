@@ -11,8 +11,8 @@ defmodule ElixirLS.LanguageServer do
     import Supervisor.Spec, warn: false    
     children = [
       # Define workers and child supervisors to be supervised      
-      # worker(ElixirLS.LanguageServer.Server, [ElixirLS.LanguageServer.Server]),
-      # worker(ElixirLS.IOHandler, [ElixirLS.LanguageServer.Server, [name: ElixirLS.LanguageServer.IOHandler]]),
+      worker(ElixirLS.LanguageServer.Server, [ElixirLS.LanguageServer.Server]),
+      worker(ElixirLS.IOHandler, [ElixirLS.LanguageServer.Server, [name: ElixirLS.LanguageServer.IOHandler]]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

@@ -5,7 +5,7 @@ defmodule ElixirLS.LanguageServer.Server do
 
   ## Client API
 
-  def start_link(name \\ nil) do    
+  def start_link(name \\ nil) do
     GenServer.start_link(__MODULE__, :ok, name: name)
   end
 
@@ -15,32 +15,43 @@ defmodule ElixirLS.LanguageServer.Server do
 
   ## Server Callbacks
 
-  def init(:ok) do    
-    {:ok}
+  def handle_call({:request_finished, id, {:error, type, msg}}, _from) do
+
   end
 
-  def handle_call({:request_finished, id, {:error, type, msg}}, _from) do    
-    
+  def handle_call({:request_finished, id, {:ok, result}}, _from) do
+
   end
 
-  def handle_call({:request_finished, id, {:ok, result}}, _from) do    
-    
+  def handle_call({:receive_packet, packet}, _from) do
+    case packet do
+      %{"method" => "initialize", "jsonrpc" => "2.0"} ->
+        server_capabilities()
+      _ -> nil
+     end
   end
 
-  def handle_call({:receive_packet, request(id, _, _) = packet}, _from) do 
-    
+  defp server_capabilities do
+    %{"textDocumentSync" => 1,
+      "hoverProvider" => false,
+      "completionProvider" => %{},
+      "definitionProvider" => true}
   end
 
   def handle_call({:receive_packet, notification(_) = packet}, _from) do
-    
+
+  end
+
+  def request_by_type(%{"method" => "initialize"}) do
+
   end
 
   def handle_info({:DOWN, ref, :process, _pid, :normal}, state) do
-    
+
   end
 
   def handle_info({:DOWN, ref, :process, _pid, reason}, state) do
-    
+
   end
 
   def handle_info(info, state) do
@@ -48,32 +59,32 @@ defmodule ElixirLS.LanguageServer.Server do
   end
 
   def handle_notification(notification("initialized"), state) do
-    
+
   end
 
   def terminate(reason, state) do
-    
+
   end
 
   ## Helpers
 
   defp find_and_update(list, find_fn, update_fn) do
-    
+
   end
 
   defp handle_request_async(id, func) do
-    
-  end  
+
+  end
 
   defp send_responses(state) do
-    
+
   end
 
   defp update_request(state, id, update_fn) do
-    
+
   end
 
   defp update_request_by_ref(state, ref, update_fn) do
-    
-  end  
+
+  end
 end
