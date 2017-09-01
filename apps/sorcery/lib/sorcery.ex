@@ -1,6 +1,6 @@
-defmodule IoHandler do
+defmodule Sorcery do
   @moduledoc """
-  Documentation for IoHandler.
+  Documentation for Sorcery.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule IoHandler do
 
   ## Examples
 
-      iex> IoHandler.hello
+      iex> Sorcery.hello
       :world
 
   """

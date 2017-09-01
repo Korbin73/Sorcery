@@ -1,49 +1,33 @@
-defmodule ElixirLS.LanguageServer.Mixfile do
+defmodule Sorcery.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :sorcery,
-     version: "0.1.0",
-     elixir: "~> 1.3",
-     build_path: "../../_build",
-     config_path: "config/config.exs",
-     deps_path: "../../deps",
-     lockfile: "../../mix.lock",
-     build_embedded: false,
-     start_permanent: true,
-     build_per_environment: false,
-     consolidate_protocols: false,
-     deps: deps(),
-     escript: escript()]
+    [
+      app: :sorcery,
+      version: "0.1.0",
+      build_path: "../../_build",
+      config_path: "../../config/config.exs",
+      deps_path: "../../deps",
+      lockfile: "../../mix.lock",
+      elixir: "~> 1.5",
+      start_permanent: Mix.env == :prod,
+      deps: deps()
+    ]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
+  # Run "mix help compile.app" to learn about applications.
   def application do
-    # Specify extra applications you'll use from Erlang/Elixir
-    [mod: {ElixirLS.LanguageServer, []}, applications: [:mix, :logger]]
+    [
+      extra_applications: [:logger]
+    ]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:my_dep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
+  # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [{:io_handler, in_umbrella: true},
-     {:elixir_sense, github: "msaraiva/elixir_sense"}]
-  end
-
-  defp escript do
-    [main_module: ElixirLS.LanguageServer.CLI, 
-     embed_elixir: true, 
-     path: "../../release/sorcery",
-     strip_beam: false, 
+    [
+      # {:dep_from_hexpm, "~> 0.3.0"},
+      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      # {:sibling_app_in_umbrella, in_umbrella: true},
     ]
   end
 end

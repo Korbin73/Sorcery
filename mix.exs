@@ -1,27 +1,20 @@
-defmodule ElixirLS.Mixfile do
+defmodule LanguageServer.Mixfile do
   use Mix.Project
 
   def project do
-    [apps_path: "apps",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     build_per_environment: false,
-     deps: deps()]
+    [
+      apps_path: "apps",
+      start_permanent: Mix.env == :prod,
+      deps: deps()
+    ]
   end
 
-  # Dependencies can be Hex packages:
+  # Dependencies listed here are available only for this
+  # project and cannot be accessed from applications inside
+  # the apps folder.
   #
-  #   {:my_dep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options.
-  #
-  # Dependencies listed here are available only for this project
-  # and cannot be accessed from applications inside the apps folder
+  # Run "mix help deps" for examples and options.
   defp deps do
-    [{:mix_test_watch, "~> 0.4.0", runtime: false}]
+    []
   end
 end
