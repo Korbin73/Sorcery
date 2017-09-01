@@ -17,6 +17,7 @@ defmodule Sorcery.Server do
   alias Sorcery.Server.Socket, as: ServerSocket
 
   def main(args) do
+    IO.puts "Just getting started"
     {opts, _, _} = OptionParser.parse(args) 
     
     env = Keyword.get(opts, :env, "dev")
