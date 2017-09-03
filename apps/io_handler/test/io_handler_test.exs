@@ -1,3 +1,5 @@
+Code.load_file("test/packet_helper.exs")
+
 defmodule IoHandlerTest do
   use ExUnit.Case
   import ExUnit.CaptureIO
@@ -21,5 +23,18 @@ defmodule IoHandlerTest do
     end
     IoHandler.start_link(Stub)
     |> check_for_pid.()
+  end 
+end
+
+defmodule IOTestPacket do
+  use ExUnit.Case
+
+  setup do
+    {:ok, packet_server} = PacketCapture.start_link(self())
+    {:ok, %{server: packet_server}}
+  end
+
+  test "Should try to capture the io", %{server: server} do
+    
   end
 end
