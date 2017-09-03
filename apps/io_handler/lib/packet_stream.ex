@@ -43,6 +43,6 @@ defmodule Sorcery.IOHandler.PacketStream do
   defp read_body(pid, header) do 
     %{"Content-Length" => content_length_str} = header
     body = IO.binread(pid, String.to_integer(content_length_str))
-    check_end_of_file(body == :eof ,body)    
+    check_end_of_file(body == :eof, body)    
   end
 end
