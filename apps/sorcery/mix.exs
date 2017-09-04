@@ -11,7 +11,8 @@ defmodule Sorcery.Mixfile do
       lockfile: "../../mix.lock",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      escript: escript()
     ]
   end
 
@@ -19,6 +20,13 @@ defmodule Sorcery.Mixfile do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  def escript() do
+    [
+      main_module: Sorcery.CLI,
+      path: "../../release/sorcery"
     ]
   end
 

@@ -23,4 +23,3 @@ defmodule IoHandlerTest do
     |> check_for_pid.()
   end 
 end
-

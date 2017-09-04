@@ -1,8 +1,8 @@
 defmodule SorceryTest do
   use ExUnit.Case
-  doctest Sorcery
+  doctest Sorcery 
 
-  test "greets the world" do
-    assert Sorcery.hello() == :world
+  test "Should start server genserver" do
+    
   end
 end
