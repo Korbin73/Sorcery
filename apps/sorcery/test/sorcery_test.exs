@@ -2,7 +2,12 @@ defmodule SorceryTest do
   use ExUnit.Case
   # doctest Sorcery   
 
-  test "Should start server genserver" do
-    GenServer.start_link(Sorcery.Server, %{})
+  setup do
+    {:ok, proc} = GenServer.start_link(Sorcery.Server, %{})
+    %{server: proc }
+  end
+  
+  test "Should start server genserver", %{server: server} do
+    GenServer.call(server, {:recieve_packet, %{"movie"=>"x-men"}})
   end
 end

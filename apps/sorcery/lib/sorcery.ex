@@ -6,8 +6,8 @@ defmodule Sorcery.Server do
     GenServer.call(server, {:recieve_packet, packet})
   end
 
-  def handle_call({:recieve_packet, _packet}) do
+  def handle_call({:recieve_packet, _packet}, _from, state) do
     IO.puts "Handle call getting made."
-    :not_implemented
+    {:reply, :not_implemented, state}
   end
 end
