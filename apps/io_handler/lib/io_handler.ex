@@ -1,8 +1,8 @@
-defmodule ElixirLS.IOHandler do
+defmodule Sorcery.IOHandler do
   @moduledoc """
   Reads and writes packets using the Language Server Protocol's wire protocol
   """
-  alias ElixirLS.IOHandler.PacketStream
+  alias Sorcery.IOHandler.PacketStream
 
   def start_link(handler, opts \\ []) do
     pid = Process.spawn(__MODULE__, :read_stdin, [handler], [:link])
@@ -11,7 +11,6 @@ defmodule ElixirLS.IOHandler do
   end
 
   def read_stdin(handler) do
-    
     PacketStream.stream(Process.group_leader)
     |> Stream.each(fn packet -> handler.receive_packet(packet) end)
     |> Stream.run
