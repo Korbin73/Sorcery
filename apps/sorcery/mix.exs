@@ -19,6 +19,7 @@ defmodule Sorcery.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {Sorcery.Main, []},
       extra_applications: [:logger]
     ]
   end
