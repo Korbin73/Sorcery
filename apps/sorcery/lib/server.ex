@@ -15,8 +15,7 @@ defmodule Sorcery.Server do
   end
 
   def handle_call({:recieve_packet, _packet}, _from, state) do
-    IO.puts "[Info] Recieved packet."
-    # P{:reply, :not_implemented, state}
+    Logger.info "Recieved packet."
     {:ok, %{"capabilities" => server_capabilities()}, state}
   end
 
