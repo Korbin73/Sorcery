@@ -8,14 +8,10 @@ defmodule Sorcery.Server do
   end
 
   def receive_packet(server, packet) do
-    Sorcery.JsonRpc.log_message :info,
-                                "[Info] Packet received.",
-                                &Sorcery.JsonRpc.send/1
     GenServer.call server, {:recieve_packet, packet}
   end
 
   def handle_call({:recieve_packet, _packet}, _from, state) do
-    Logger.info "Recieved packet."
     {:ok, %{"capabilities" => server_capabilities()}, state}
   end
 

@@ -5,8 +5,7 @@ defmodule Sorcery.Main do
     import Supervisor.Spec, warn: false
     
     children = [
-      worker(Sorcery.Server, []),
-      worker(Sorcery.IOPreviousHandler, [Sorcery.Server]),
+      worker(Sorcery.Server, [])
     ]
 
     opts = [strategy: :one_for_one, name: Sorcery.Supervisor, max_restarts: 0]
