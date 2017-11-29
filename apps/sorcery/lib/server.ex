@@ -11,7 +11,7 @@ defmodule Sorcery.Server do
     GenServer.call server, {:recieve_packet, packet}
   end
 
-  def handle_call({:recieve_packet, _packet}, _from, state) do
+  def handle_call({:recieve_packet, packet}, _from, state) do
     {:ok, %{"capabilities" => server_capabilities()}, state}
   end
 

@@ -15,6 +15,9 @@ defmodule LanguageServer.Mixfile do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    [{:logger_file_backend, "~> 0.0.10"}]
+    [
+      {:logger_file_backend, "~> 0.0.10"},
+      {:socket, "~> 0.3.12"}
+    ]
   end
 end
