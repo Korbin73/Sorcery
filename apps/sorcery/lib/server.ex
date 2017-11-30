@@ -12,7 +12,7 @@ defmodule Sorcery.Server do
   end
 
   def handle_call({:recieve_packet, packet}, _from, state) do
-    {:ok, %{"capabilities" => server_capabilities()}, state}
+    {:reply, :ok, %{"capabilities" => server_capabilities()}}
   end
 
   def server_capabilities do
