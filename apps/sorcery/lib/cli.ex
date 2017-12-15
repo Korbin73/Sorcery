@@ -8,9 +8,6 @@ defmodule Sorcery.CLI do
     Logger.configure_backend {LoggerFileBackend, :debug},
       path: "/Users/Lee1/Documents/Elixirist/language_server/debug.log"
 
-    Logger.debug "Random eqyptian desert."
-    Logger.debug "this is a onther test"
-
     :timer.sleep(:infinity)
   end
 end

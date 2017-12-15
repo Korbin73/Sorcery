@@ -21,3 +21,4 @@ erl_crash.dump
 .vscode
 sorcery_server
 release/sorcery
+*.iml

@@ -4,7 +4,7 @@ defmodule Sorcery.Server do
   require Logger
 
   def start_link() do
-    GenServer.start_link __MODULE__, %{}, name: __MODULE__
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def receive_packet(server, packet) do
@@ -12,6 +12,7 @@ defmodule Sorcery.Server do
   end
 
   def handle_call({:recieve_packet, packet}, _from, state) do
+    IO.inspect(state)
     {:reply, :ok, %{"capabilities" => server_capabilities()}}
   end
 
